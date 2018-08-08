@@ -23,6 +23,7 @@ public class ApiClient {
         if(okHttpClient == null)
             initOkHttp();
 
+        //Building retrofit
         Retrofit.Builder retrofitBuilder= new Retrofit.Builder()
                 .baseUrl(COUNTRY_BASE_URL)
                 .client(okHttpClient)
@@ -31,6 +32,7 @@ public class ApiClient {
         return retrofitBuilder.build();
     }
 
+    //Initializing okhttp
     private static void initOkHttp(){
         OkHttpClient.Builder builder= new OkHttpClient.Builder()
                 .connectTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)

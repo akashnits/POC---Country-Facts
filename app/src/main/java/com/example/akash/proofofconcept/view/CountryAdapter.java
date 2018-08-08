@@ -59,6 +59,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
             }
         }
 
+        //updating UI as per data from server
         private void updateUi(CountryFact countryFact){
             if(countryFact.getDescription() != null || countryFact.getTitle() != null
                     || countryFact.getImageHref() != null){

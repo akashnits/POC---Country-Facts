@@ -50,6 +50,7 @@ public class CountryViewModel extends Observable {
         return countryFactList;
     }
 
+    //this is called on swiping down the refresh layout
     public void onRefresh(){
         isLoading.set(true);
         updateViews();
@@ -61,6 +62,7 @@ public class CountryViewModel extends Observable {
         countryLabel.set(View.GONE);
     }
 
+    //making network call to fetch json using RxJava and retrofit
     private void fetchCountryInfo(){
         ApiService apiService= ApiClient.getClient().create(ApiService.class);
         compositeDisposable.add(apiService

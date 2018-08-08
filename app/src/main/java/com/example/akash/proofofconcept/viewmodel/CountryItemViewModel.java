@@ -31,6 +31,7 @@ public class CountryItemViewModel extends BaseObservable {
         return countryFact.getImageHref();
     }
 
+    //using glide for fetching and caching images
     @BindingAdapter("imageUrl") public static void setImageUrl(ImageView imageView, String url) {
         Glide.with(imageView.getContext()).load(url).into(imageView);
     }

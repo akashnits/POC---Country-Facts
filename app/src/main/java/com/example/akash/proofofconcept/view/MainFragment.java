@@ -25,6 +25,7 @@ import com.example.akash.proofofconcept.viewmodel.CountryViewModel;
 import java.util.Observable;
 import java.util.Observer;
 
+//Uses MVVM design pattern: Fragment acts as an observer for the corresponding ViewModel (i.e. CountryViewModel)
 
 public class MainFragment extends Fragment implements Observer {
 
@@ -93,6 +94,7 @@ public class MainFragment extends Fragment implements Observer {
         }
     }
 
+    //polishing UI - getting the mid position on screen to set up progress bar for SwipeRefresh progress bar
     private int[] getCenterPoint(){
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
