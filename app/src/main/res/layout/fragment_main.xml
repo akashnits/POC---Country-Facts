@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+<data>
+    <variable
+        name="mainViewModel"
+        type="com.example.akash.proofofconcept.viewmodel.CountryViewModel"/>
+</data>
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:refreshing="@{mainViewModel.isLoading}"
+    app:onRefreshListener="@{() -> mainViewModel.onRefresh()}"
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="@+id/label_status"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@{mainViewModel.toolbarTitle}"
+            app:titleTextColor="#ffffff"/>
+
+        <TextView
+            android:id="@+id/label_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@{mainViewModel.countryMessage}"
+            app:layout_constraintBottom_toTopOf="@+id/list_country"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibility="@{mainViewModel.countryLabel}" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_country"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:visibility="@{mainViewModel.countryRecyclerView}"
+            tools:listitem="@layout/item_country" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+
+</layout>

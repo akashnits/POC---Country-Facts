@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Proof of concept</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pull_down_to_refresh">Please pull down to refresh</string>
+    <string name="error_loading_facts">Error loading facts</string>
+</resources>
