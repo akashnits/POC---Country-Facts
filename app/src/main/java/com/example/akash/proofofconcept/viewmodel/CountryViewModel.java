@@ -56,7 +56,7 @@ public class CountryViewModel extends Observable {
         fetchCountryInfo();
     }
 
-    private void updateViews(){
+    public void updateViews(){
         countryRecyclerView.set(View.GONE);
         countryLabel.set(View.GONE);
     }

@@ -13,7 +13,7 @@ public class CountryFact {
 	private String description;
 
 	@SerializedName("title")
-	private String title;
+	public String title;
 
 	public void setImageHref(String imageHref){
 		this.imageHref = imageHref;
