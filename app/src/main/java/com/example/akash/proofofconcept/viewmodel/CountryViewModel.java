@@ -5,6 +5,8 @@ import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function;
@@ -30,7 +31,7 @@ public class CountryViewModel extends Observable {
     public ObservableInt countryLabel;
     public ObservableField<String> countryMessage;
     public ObservableField<String> toolbarTitle;
-    public ObservableBoolean isLoading = new ObservableBoolean();
+    public ObservableBoolean isRefreshing;
 
 
     private List<CountryFact> countryFactList;
@@ -44,6 +45,7 @@ public class CountryViewModel extends Observable {
         countryMessage= new ObservableField<>(context.getString(R.string.pull_down_to_refresh));
         toolbarTitle= new ObservableField<>(context.getString(R.string.app_name));
         countryFactList = new ArrayList<>();
+        isRefreshing = new ObservableBoolean();
     }
 
     public List<CountryFact> getCountryFactList() {
@@ -52,9 +54,14 @@ public class CountryViewModel extends Observable {
 
     //this is called on swiping down the refresh layout
     public void onRefresh(){
-        isLoading.set(true);
-        updateViews();
-        fetchCountryInfo();
+        isRefreshing.set(true);
+        if(isNetworkAvailable()) {
+            updateViews();
+            fetchCountryInfo();
+        }else {
+            Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show();
+            isRefreshing.set(false);
+        }
     }
 
     public void updateViews(){
@@ -83,7 +90,7 @@ public class CountryViewModel extends Observable {
                         updateData(countryFacts);
                         countryRecyclerView.set(View.VISIBLE);
                         countryLabel.set(View.GONE);
-                        isLoading.set(false);
+                        isRefreshing.set(false);
                     }
 
                     @Override
@@ -92,7 +99,7 @@ public class CountryViewModel extends Observable {
                         countryMessage.set(context.getString(R.string.error_loading_facts));
                         countryLabel.set(View.VISIBLE);
                         countryRecyclerView.set(View.GONE);
-                        isLoading.set(false);
+                        isRefreshing.set(false);
                     }
                 }));
 
@@ -115,5 +122,12 @@ public class CountryViewModel extends Observable {
         unSubscribeFromObservable();
         compositeDisposable = null;
         context = null;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+            = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }
