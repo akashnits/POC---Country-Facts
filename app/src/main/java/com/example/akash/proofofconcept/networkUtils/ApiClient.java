@@ -1,5 +1,7 @@
 package com.example.akash.proofofconcept.networkUtils;
 
+import android.support.test.espresso.IdlingResource;
+
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.IOException;
@@ -12,14 +14,17 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.jakewharton.espresso.OkHttp3IdlingResource;
 
 public class ApiClient {
-    private static final long REQUEST_TIME_OUT= 60;
-    private static OkHttpClient okHttpClient;
-    private static final String COUNTRY_BASE_URL= "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/";
+    private OkHttpClient okHttpClient;
+    private static ApiClient INSTANCE= null;
+    private Retrofit retrofit;
+    private static IdlingResource mResource;
 
 
-    public static Retrofit getClient(){
+    private ApiClient(){
+        String COUNTRY_BASE_URL= "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/";
         if(okHttpClient == null)
             initOkHttp();
 
@@ -29,11 +34,23 @@ public class ApiClient {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
-        return retrofitBuilder.build();
+        retrofit=  retrofitBuilder.build();
+    }
+
+    public synchronized static ApiClient getInstance(){
+        if(INSTANCE == null){
+            INSTANCE= new ApiClient();
+        }
+        return INSTANCE;
+    }
+
+    public  Retrofit getClient(){
+        return retrofit;
     }
 
     //Initializing okhttp
-    private static void initOkHttp(){
+    private void initOkHttp(){
+        long REQUEST_TIME_OUT= 60;
         OkHttpClient.Builder builder= new OkHttpClient.Builder()
                 .connectTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
@@ -55,5 +72,9 @@ public class ApiClient {
             }
         });
         okHttpClient= builder.build();
+        mResource= OkHttp3IdlingResource.create("OkHttp", okHttpClient);
+    }
+    public static IdlingResource getmResource(){
+        return mResource;
     }
 }

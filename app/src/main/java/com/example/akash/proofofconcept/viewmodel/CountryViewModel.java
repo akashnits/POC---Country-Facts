@@ -7,6 +7,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,11 +42,12 @@ public class CountryViewModel extends Observable {
     public CountryViewModel(Context context) {
         this.context = context;
         countryRecyclerView= new ObservableInt(View.GONE);
-        countryLabel= new ObservableInt(View.VISIBLE);
+        countryLabel= new ObservableInt(View.GONE);
         countryMessage= new ObservableField<>(context.getString(R.string.pull_down_to_refresh));
         toolbarTitle= new ObservableField<>(context.getString(R.string.app_name));
         countryFactList = new ArrayList<>();
         isRefreshing = new ObservableBoolean();
+        fetchCountryInfo();
     }
 
     public List<CountryFact> getCountryFactList() {
@@ -71,10 +73,10 @@ public class CountryViewModel extends Observable {
 
     //making network call to fetch json using RxJava and retrofit
     private void fetchCountryInfo(){
-        ApiService apiService= ApiClient.getClient().create(ApiService.class);
+        ApiService apiService= ApiClient.getInstance().getClient().create(ApiService.class);
         compositeDisposable.add(apiService
                 .getCountry()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.from(AsyncTask.THREAD_POOL_EXECUTOR))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<Country, List<CountryFact>>() {
                     @Override
