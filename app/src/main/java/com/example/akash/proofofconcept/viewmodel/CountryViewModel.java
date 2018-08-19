@@ -1,6 +1,9 @@
 package com.example.akash.proofofconcept.viewmodel;
 
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
@@ -8,6 +11,7 @@ import android.databinding.ObservableInt;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,27 +31,16 @@ import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class CountryViewModel extends Observable {
-    public ObservableInt countryRecyclerView;
-    public ObservableInt countryLabel;
-    public ObservableField<String> countryMessage;
-    public ObservableField<String> toolbarTitle;
-    public ObservableBoolean isRefreshing;
-
-
+public class CountryViewModel extends AndroidViewModel {
     private List<CountryFact> countryFactList;
     private Context context;
     private CompositeDisposable compositeDisposable= new CompositeDisposable();
 
-    public CountryViewModel(Context context) {
+    public CountryViewModel(@NonNull Application application,
+        List<CountryFact> countryFactList, Context context) {
+        super(application);
+        this.countryFactList = countryFactList;
         this.context = context;
-        countryRecyclerView= new ObservableInt(View.GONE);
-        countryLabel= new ObservableInt(View.GONE);
-        countryMessage= new ObservableField<>(context.getString(R.string.pull_down_to_refresh));
-        toolbarTitle= new ObservableField<>(context.getString(R.string.app_name));
-        countryFactList = new ArrayList<>();
-        isRefreshing = new ObservableBoolean();
-        fetchCountryInfo();
     }
 
     public List<CountryFact> getCountryFactList() {
