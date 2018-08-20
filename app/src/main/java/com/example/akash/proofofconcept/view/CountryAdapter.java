@@ -12,15 +12,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import com.bumptech.glide.Glide;
 import com.example.akash.proofofconcept.R;
 import com.example.akash.proofofconcept.model.CountryFact;
 import com.example.akash.proofofconcept.viewmodel.CountryItemViewModel;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryViewHolder> {
 
 
   private List<CountryFact> countryFactList;
+
+   CountryAdapter() {
+    this.countryFactList= new ArrayList<>();
+  }
 
   @NonNull
   @Override
@@ -40,11 +48,6 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
     return countryFactList.size();
   }
 
-  public void setCountryFactList(List<CountryFact> countryFactList) {
-    this.countryFactList = countryFactList;
-    notifyDataSetChanged();
-  }
-
   class CountryViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.label_title) TextView labelTitle;
@@ -60,12 +63,10 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
 
     public void bindCountryInfo(CountryFact countryFact) {
       updateUi(countryFact);
-      //TODO: Fix this - Find data to views from viewModel
-      /*if (mItemCountryBinding.getItemViewModel() == null) {
-        mItemCountryBinding.setItemViewModel(new CountryItemViewModel(countryFact));
-      } else {
-        mItemCountryBinding.getItemViewModel().setCountryItem(countryFact);
-      }*/
+      labelTitle.setText(countryFact.getTitle());
+      labelDescription.setText(countryFact.getDescription());
+
+      Glide.with(itemView.getContext()).load(countryFact.getImageHref()).into(labelImageView);
     }
 
     //updating UI as per data from server
@@ -91,5 +92,11 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
         labelTitle.setVisibility(View.GONE);
       }
     }
+  }
+
+  public void updateData(List<CountryFact> factList){
+    countryFactList.clear();
+    countryFactList.addAll(factList);
+    notifyDataSetChanged();
   }
 }
